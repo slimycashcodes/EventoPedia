@@ -1,0 +1,31 @@
+package com.example.facultyservice.controller;
+
+import com.example.facultyservice.entity.Faculty;
+import com.example.facultyservice.service.FacultyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/faculty")
+@CrossOrigin(origins = "*")
+public class FacultyController {
+    @Autowired
+    private FacultyService facultyService;
+
+    @PostMapping("/register")
+    public ResponseEntity<Faculty> register(@RequestBody Faculty faculty) {
+        return ResponseEntity.ok(facultyService.register(faculty));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Faculty loginRequest) {
+        Optional<Faculty> faculty = facultyService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        if (faculty.isPresent()) {
+            return ResponseEntity.ok(faculty.get());
+        }
+        return ResponseEntity.status(401).body("Invalid credentials");
+    }
+}
